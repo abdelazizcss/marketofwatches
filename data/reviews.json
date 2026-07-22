@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Ahmed Al-Rashid",
+    "rating": 5,
+    "text": "Excellent quality watches at great prices. Fast delivery and friendly service!",
+    "date": "2024-12-10"
+  },
+  {
+    "id": 2,
+    "name": "Sara Mahmoud",
+    "rating": 5,
+    "text": "Bought a watch for my husband and he loves it. Will definitely order again.",
+    "date": "2024-11-28"
+  },
+  {
+    "id": 3,
+    "name": "Omar Khalil",
+    "rating": 4,
+    "text": "Good value for money. The watch looks exactly as shown in the pictures.",
+    "date": "2024-11-15"
+  },
+  {
+    "id": 4,
+    "name": "Layla Hassan",
+    "rating": 5,
+    "text": "Amazing collection! Found the perfect gift for my sister. Highly recommended.",
+    "date": "2024-10-30"
+  },
+  {
+    "id": 5,
+    "name": "Youssef Ali",
+    "rating": 4,
+    "text": "Very satisfied with my purchase. The ordering process was smooth and easy.",
+    "date": "2024-10-18"
+  },
+  {
+    "id": 6,
+    "name": "Nour El-Din",
+    "rating": 5,
+    "text": "Best watch store in town. Great customer support and reliable products.",
+    "date": "2024-10-05"
+  }
+]

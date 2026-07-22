@@ -1,0 +1,314 @@
+[
+  {
+    "id": 1,
+    "name": "Classic Men's Watch",
+    "category": "men",
+    "price": 150,
+    "discount": 20,
+    "description": "A timeless classic watch with genuine leather strap and stainless steel case. Perfect for everyday wear and formal occasions.",
+    "specifications": {
+      "Movement": "Quartz",
+      "Case Material": "Stainless Steel",
+      "Water Resistance": "50m",
+      "Band Material": "Genuine Leather",
+      "Case Diameter": "40mm"
+    },
+    "colors": ["Black", "Brown", "Navy"],
+    "bestSeller": true,
+    "featured": true,
+    "offer": true,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Elegant Women's Watch",
+    "category": "women",
+    "price": 180,
+    "discount": 0,
+    "description": "A beautiful and elegant watch designed for women. Features a slim profile and a stylish metal band.",
+    "specifications": {
+      "Movement": "Quartz",
+      "Case Material": "Rose Gold Plated",
+      "Water Resistance": "30m",
+      "Band Material": "Stainless Steel",
+      "Case Diameter": "28mm"
+    },
+    "colors": ["Rose Gold", "Silver", "Gold"],
+    "bestSeller": false,
+    "featured": true,
+    "offer": false,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Sport Chronograph",
+    "category": "sports",
+    "price": 220,
+    "discount": 15,
+    "description": "A rugged sports watch with chronograph functions and a durable rubber strap. Built for adventure.",
+    "specifications": {
+      "Movement": "Quartz Chronograph",
+      "Case Material": "ABS Resin",
+      "Water Resistance": "100m",
+      "Band Material": "Silicone",
+      "Case Diameter": "44mm"
+    },
+    "colors": ["Black/Orange", "Black/Green", "Navy/White"],
+    "bestSeller": true,
+    "featured": true,
+    "offer": true,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Minimalist Men's Watch",
+    "category": "men",
+    "price": 120,
+    "discount": 0,
+    "description": "Clean and minimalist design. A versatile watch that matches any outfit.",
+    "specifications": {
+      "Movement": "Quartz",
+      "Case Material": "Brushed Steel",
+      "Water Resistance": "30m",
+      "Band Material": "Mesh",
+      "Case Diameter": "38mm"
+    },
+    "colors": ["Silver", "Black", "Gold"],
+    "bestSeller": false,
+    "featured": false,
+    "offer": false,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Fashion Women's Watch",
+    "category": "women",
+    "price": 140,
+    "discount": 25,
+    "description": "Trendy fashion watch with a colorful strap. A perfect accessory for the modern woman.",
+    "specifications": {
+      "Movement": "Quartz",
+      "Case Material": "Alloy",
+      "Water Resistance": "30m",
+      "Band Material": "Canvas",
+      "Case Diameter": "30mm"
+    },
+    "colors": ["Pink", "Blue", "White"],
+    "bestSeller": true,
+    "featured": false,
+    "offer": true,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Adventure Sports Watch",
+    "category": "sports",
+    "price": 190,
+    "discount": 0,
+    "description": "Ready for any adventure. Durable construction with a comfortable fit for sports and outdoor activities.",
+    "specifications": {
+      "Movement": "Quartz",
+      "Case Material": "Polycarbonate",
+      "Water Resistance": "50m",
+      "Band Material": "Nylon",
+      "Case Diameter": "46mm"
+    },
+    "colors": ["Black/Red", "Olive Green", "Desert Tan"],
+    "bestSeller": false,
+    "featured": false,
+    "offer": false,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Business Men's Watch",
+    "category": "men",
+    "price": 250,
+    "discount": 10,
+    "description": "Professional business watch with a sophisticated look. Ideal for office and meetings.",
+    "specifications": {
+      "Movement": "Automatic",
+      "Case Material": "Stainless Steel",
+      "Water Resistance": "50m",
+      "Band Material": "Leather",
+      "Case Diameter": "42mm"
+    },
+    "colors": ["Black", "Brown", "Burgundy"],
+    "bestSeller": true,
+    "featured": true,
+    "offer": true,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Casual Women's Watch",
+    "category": "women",
+    "price": 130,
+    "discount": 0,
+    "description": "Casual and comfortable watch for daily wear. Lightweight and stylish.",
+    "specifications": {
+      "Movement": "Quartz",
+      "Case Material": "Alloy",
+      "Water Resistance": "30m",
+      "Band Material": "Silicone",
+      "Case Diameter": "32mm"
+    },
+    "colors": ["White", "Mint", "Lavender"],
+    "bestSeller": false,
+    "featured": true,
+    "offer": false,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Digital Sports Watch",
+    "category": "sports",
+    "price": 160,
+    "discount": 30,
+    "description": "Modern digital sports watch with multiple functions including stopwatch, alarm, and backlight.",
+    "specifications": {
+      "Movement": "Digital Quartz",
+      "Case Material": "ABS",
+      "Water Resistance": "50m",
+      "Band Material": "Rubber",
+      "Case Diameter": "48mm"
+    },
+    "colors": ["Black", "Blue", "Red"],
+    "bestSeller": true,
+    "featured": false,
+    "offer": true,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Vintage Men's Watch",
+    "category": "men",
+    "price": 200,
+    "discount": 0,
+    "description": "Inspired by vintage designs. A unique watch with character and charm.",
+    "specifications": {
+      "Movement": "Automatic",
+      "Case Material": "Brass",
+      "Water Resistance": "30m",
+      "Band Material": "Leather",
+      "Case Diameter": "41mm"
+    },
+    "colors": ["Antique Gold", "Silver", "Bronze"],
+    "bestSeller": false,
+    "featured": true,
+    "offer": false,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Crystal Women's Watch",
+    "category": "women",
+    "price": 170,
+    "discount": 15,
+    "description": "Elegant watch with crystal accents on the dial. A sparkling addition to any outfit.",
+    "specifications": {
+      "Movement": "Quartz",
+      "Case Material": "Rose Gold Alloy",
+      "Water Resistance": "30m",
+      "Band Material": "Metal",
+      "Case Diameter": "26mm"
+    },
+    "colors": ["Rose Gold", "Silver", "Champagne"],
+    "bestSeller": false,
+    "featured": false,
+    "offer": true,
+    "images": [
+      "images/watch.svg",
+      "images/watch.svg",
+      "images/watch.svg"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Rolex Oyster Perpetual",
+    "category": "men",
+    "price": 4500,
+    "discount": 5,
+    "description": "أيقونة الفخامة والتميز. حركة أوتوماتيكية دقيقة، جرام من الفولاذ المقاوم للصدأ، وتصميم كلاسيكي خالد يناسب جميع المناسبات.",
+    "specifications": {
+      "Movement": "Automatic",
+      "Case Material": "Oystersteel",
+      "Water Resistance": "100m",
+      "Band Material": "Stainless Steel",
+      "Case Diameter": "41mm"
+    },
+    "colors": ["Black", "Silver", "Blue"],
+    "bestSeller": true,
+    "featured": true,
+    "offer": true,
+    "images": [
+      "images/rolex/rolex watches product 1 pic 1.png",
+      "images/rolex/rolex watches product 1 pic 2.png",
+      "images/rolex/rolex watches product 1 pic 3.png"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Casio G-Shock",
+    "category": "sports",
+    "price": 320,
+    "discount": 15,
+    "description": "قوة وموثوقية في تصميم عصري. مقاومة للصدمات، ماء حتى 200م، مع وظائف متعددة تشمل chronograph و alarm و world time.",
+    "specifications": {
+      "Movement": "Digital Quartz",
+      "Case Material": "Resin",
+      "Water Resistance": "200m",
+      "Band Material": "Resin",
+      "Case Diameter": "48mm"
+    },
+    "colors": ["Black", "Red", "Green"],
+    "bestSeller": false,
+    "featured": true,
+    "offer": true,
+    "images": [
+      "images/casio/casio watches product 1 pic 1.png",
+      "images/casio/casio watches product 1 pic 2.png",
+      "images/casio/casio watches product 1 pic 3.png"
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "question": "How do I place an order?",
+    "answer": "Simply browse our collection, find the watch you like, and click the 'Order via WhatsApp' button. Our team will assist you with the order details and delivery."
+  },
+  {
+    "id": 2,
+    "question": "Do you offer delivery?",
+    "answer": "Yes, we offer fast delivery to all areas. Delivery fees and timelines will be confirmed when you contact us via WhatsApp."
+  },
+  {
+    "id": 3,
+    "question": "What payment methods do you accept?",
+    "answer": "We accept cash on delivery, bank transfers, and mobile payment methods. Details will be provided when you order."
+  },
+  {
+    "id": 4,
+    "question": "Can I return or exchange a watch?",
+    "answer": "Yes, we accept returns and exchanges within 7 days of delivery, provided the watch is in its original condition and packaging."
+  },
+  {
+    "id": 5,
+    "question": "Are your watches original?",
+    "answer": "We sell high-quality fashion watches that offer excellent value. All products come with a 6-month warranty against manufacturing defects."
+  },
+  {
+    "id": 6,
+    "question": "Do you ship internationally?",
+    "answer": "Currently, we only ship within the country. International shipping may be available upon request - please contact us for more details."
+  }
+]

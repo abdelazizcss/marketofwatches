@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - بوخاري للساعات</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand">
+                    <div class="sidebar-brand-icon">⌚</div>
+                    <div class="sidebar-brand-text">
+                        <h2>بوخاري للساعات</h2>
+                        <p>لوحة التحكم</p>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">القائمة الرئيسية</div>
+                    <a href="index.html" class="nav-item active">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">الرئيسية</span>
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <span class="nav-icon">⌚</span>
+                        <span class="nav-text">المنتجات</span>
+                    </a>
+                    <a href="categories.html" class="nav-item">
+                        <span class="nav-icon">📁</span>
+                        <span class="nav-text">الفئات</span>
+                    </a>
+                    <a href="orders.html" class="nav-item">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">الطلبات</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">خروج</div>
+                    <a href="../index.html" class="nav-item" target="_blank" rel="noopener noreferrer">
+                        <span class="nav-icon">🌐</span>
+                        <span class="nav-text">الموقع الرئيسي</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logout-btn">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-text">تسجيل الخروج</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div>
+                        <h2 class="topbar-title">لوحة التحكم</h2>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-details">
+                        <span class="user-name" id="user-name">المدير</span>
+                        <span class="user-role">مدير</span>
+                    </div>
+                    <div class="user-avatar">م</div>
+                </div>
+            </header>
+
+            <div class="content">
+                <div id="loading-container" class="loading-container" style="display: none;">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>جاري تحميل الإحصائيات...</p>
+                    </div>
+                </div>
+
+                <div id="dashboard-content">
+                    <div class="page-header">
+                        <div>
+                            <h1 class="page-title">نظرة عامة</h1>
+                            <p class="page-subtitle">مرحباً بك في لوحة التحكم، إليك ملخص نشاط متجرك</p>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">⌚</div>
+                            <div class="stat-info">
+                                <h3>المنتجات</h3>
+                                <p class="stat-value" id="stat-products">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">📁</div>
+                            <div class="stat-info">
+                                <h3>الفئات</h3>
+                                <p class="stat-value" id="stat-categories">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon yellow">📦</div>
+                            <div class="stat-info">
+                                <h3>الطلبات</h3>
+                                <p class="stat-value" id="stat-orders">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">💰</div>
+                            <div class="stat-info">
+                                <h3>إجمالي الإيرادات</h3>
+                                <p class="stat-value" id="stat-revenue">0 ر.س</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-sections">
+                        <div class="dashboard-section">
+                            <h2 class="section-title">
+                                <span>📦</span>
+                                الطلبات الأخيرة
+                            </h2>
+                            <div id="recent-orders" class="table-container">
+                                <p class="no-data">جاري تحميل البيانات...</p>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-section">
+                            <h2 class="section-title">
+                                <span>⌚</span>
+                                المنتجات المميزة
+                            </h2>
+                            <div id="featured-products" class="table-container">
+                                <p class="no-data">جاري تحميل البيانات...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+    <div id="modal-container"></div>
+
+    <script type="module">
+        import { checkAuth, logout, getCurrentUser } from './js/auth.js';
+        import { getDashboardStats, fetchOrders, fetchProducts } from './js/api.js';
+        import { showToast, formatDate, formatPrice } from './js/ui.js';
+
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loadingContainer = document.getElementById('loading-container');
+
+        mobileMenuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay?.classList.toggle('open');
+        });
+
+        sidebarOverlay?.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+        });
+
+        logoutBtn?.addEventListener('click', async () => {
+            try {
+                await logout();
+                showToast('تم تسجيل الخروج بنجاح', 'success');
+                window.location.href = 'login.html';
+            } catch (error) {
+                showToast('حدث خطأ في تسجيل الخروج', 'error');
+            }
+        });
+
+        async function init() {
+            const isAuth = await checkAuth();
+            if (!isAuth) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = await getCurrentUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.full_name || user.email;
+            }
+
+            await loadDashboard();
+        }
+
+        async function loadDashboard() {
+            try {
+                loadingContainer.style.display = 'flex';
+
+                const stats = await getDashboardStats();
+
+                document.getElementById('stat-products').textContent = stats.totalProducts;
+                document.getElementById('stat-categories').textContent = stats.totalCategories;
+                document.getElementById('stat-orders').textContent = stats.totalOrders;
+                document.getElementById('stat-revenue').textContent = `${stats.totalRevenue.toFixed(2)} ر.س`;
+
+                const ordersResult = await fetchOrders({ page: 1, limit: 5 });
+                const recentOrdersContainer = document.getElementById('recent-orders');
+                if (recentOrdersContainer) {
+                    if (ordersResult.data.length === 0) {
+                        recentOrdersContainer.innerHTML = '<p class="no-data">لا توجد طلبات حتى الآن</p>';
+                    } else {
+                        recentOrdersContainer.innerHTML = `
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>العميل</th>
+                                        <th>الهاتف</th>
+                                        <th>المبلغ</th>
+                                        <th>الحالة</th>
+                                        <th>التاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${ordersResult.data.map(order => `
+                                        <tr>
+                                            <td>${order.customer_name}</td>
+                                            <td>${order.customer_phone}</td>
+                                            <td>${formatPrice(order.total_amount)}</td>
+                                            <td><span class="status-badge status-${order.status}">${getStatusText(order.status)}</span></td>
+                                            <td>${formatDate(order.created_at)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                    }
+                }
+
+                const productsResult = await fetchProducts({ page: 1, limit: 5, sortBy: 'created_at', sortOrder: 'desc' });
+                const featuredProductsContainer = document.getElementById('featured-products');
+                if (featuredProductsContainer) {
+                    if (productsResult.data.length === 0) {
+                        featuredProductsContainer.innerHTML = '<p class="no-data">لا توجد منتجات حتى الآن</p>';
+                    } else {
+                        featuredProductsContainer.innerHTML = `
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>المنتج</th>
+                                        <th>السعر</th>
+                                        <th>الخصم</th>
+                                        <th>المخزون</th>
+                                        <th>الحالة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${productsResult.data.map(product => {
+                                        const lowerName = (product.name || '').toLowerCase();
+                                        let fallbackImage = '/images/watch.svg';
+                                        if (lowerName.includes('benyar')) fallbackImage = '/images/benyar/benyar product 1 pic 1.jpg';
+                                        else if (lowerName.includes('casio') || lowerName.includes('g-shock')) fallbackImage = '/images/casio/casio watches product 1 pic 1.png';
+                                        else if (lowerName.includes('rolex')) fallbackImage = '/images/rolex/rolex watches product 1 pic 1.png';
+
+                                        const sortedImages = (product.product_images || []).sort((a, b) => (a.position || 0) - (b.position || 0));
+
+                                        return `
+                                            <tr>
+                                                <td>
+                                                    <div class="product-cell">
+                                                        <img src="${sortedImages[0]?.url || fallbackImage}" alt="${product.name}" class="product-thumb" onerror="this.src='${fallbackImage}'">
+                                                        <span>${product.name}</span>
+                                                    </div>
+                                                </td>
+                                                <td>${formatPrice(product.price)}</td>
+                                                <td>${product.discount}%</td>
+                                                <td>${product.stock}</td>
+                                                <td><span class="status-badge ${product.is_active ? 'status-active' : 'status-inactive'}">${product.is_active ? 'نشط' : 'غير نشط'}</span></td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                const containers = ['recent-orders', 'featured-products'];
+                containers.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.innerHTML = `<p class="no-data" style="color:var(--danger-color)">حدث خطأ في تحميل البيانات: ${error.message}</p>`;
+                    }
+                });
+                showToast('حدث خطأ في تحميل لوحة التحكم', 'error');
+            } finally {
+                loadingContainer.style.display = 'none';
+            }
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'قيد الانتظار',
+                'confirmed': 'مؤكد',
+                'processing': 'قيد المعالجة',
+                'shipped': 'تم الشحن',
+                'delivered': 'تم التسليم',
+                'cancelled': 'ملغي'
+            };
+            return statusMap[status] || status;
+        }
+
+        init();
+    </script>
+</body>
+</html>

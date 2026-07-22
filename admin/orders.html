@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الطلبات - لوحة التحكم</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand">
+                    <div class="sidebar-brand-icon">⌚</div>
+                    <div class="sidebar-brand-text">
+                        <h2>بوخاري للساعات</h2>
+                        <p>لوحة التحكم</p>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">القائمة الرئيسية</div>
+                    <a href="index.html" class="nav-item">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">الرئيسية</span>
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <span class="nav-icon">⌚</span>
+                        <span class="nav-text">المنتجات</span>
+                    </a>
+                    <a href="categories.html" class="nav-item">
+                        <span class="nav-icon">📁</span>
+                        <span class="nav-text">الفئات</span>
+                    </a>
+                    <a href="orders.html" class="nav-item active">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">الطلبات</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">خروج</div>
+                    <a href="../index.html" class="nav-item" target="_blank" rel="noopener noreferrer">
+                        <span class="nav-icon">🌐</span>
+                        <span class="nav-text">الموقع الرئيسي</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logout-btn">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-text">تسجيل الخروج</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div>
+                        <h2 class="topbar-title">إدارة الطلبات</h2>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-details">
+                        <span class="user-name" id="user-name">المدير</span>
+                        <span class="user-role">مدير</span>
+                    </div>
+                    <div class="user-avatar">م</div>
+                </div>
+            </header>
+
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">إدارة الطلبات</h1>
+                        <p class="page-subtitle">متابعة وتحديث حالات الطلبات</p>
+                    </div>
+                </div>
+
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="البحث عن طلب..."
+                            class="form-input"
+                        >
+                    </div>
+                    <select id="status-filter" class="form-select">
+                        <option value="">كل الحالات</option>
+                        <option value="pending">قيد الانتظار</option>
+                        <option value="confirmed">مؤكد</option>
+                        <option value="processing">قيد المعالجة</option>
+                        <option value="shipped">تم الشحن</option>
+                        <option value="delivered">تم التسليم</option>
+                        <option value="cancelled">ملغي</option>
+                    </select>
+                </div>
+
+                <div id="loading-container" class="loading-container" style="display: none;">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>جاري تحميل الطلبات...</p>
+                    </div>
+                </div>
+
+                <div id="orders-content">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>العميل</th>
+                                    <th>الهاتف</th>
+                                    <th>البريد</th>
+                                    <th>المبلغ</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <tr>
+                                    <td colspan="7" class="no-data">جاري تحميل البيانات...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="order-modal" class="modal-overlay" style="display: none;">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title">تفاصيل الطلب</h3>
+                <button class="modal-close" id="close-order-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="order-modal-body">
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+    <div id="modal-container"></div>
+
+    <script type="module">
+        import { checkAuth, logout, getCurrentUser } from './js/auth.js';
+        import { showToast, showModal, formatDate, formatPrice } from './js/ui.js';
+        import { fetchOrders, updateOrderStatus, deleteOrder, fetchOrderById } from './js/api.js';
+
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loadingContainer = document.getElementById('loading-container');
+        const orderModal = document.getElementById('order-modal');
+
+        let currentPage = 1;
+        let currentSearch = '';
+        let currentStatus = '';
+
+        mobileMenuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay?.classList.toggle('open');
+        });
+
+        sidebarOverlay?.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+        });
+
+        logoutBtn?.addEventListener('click', async () => {
+            try {
+                await logout();
+                showToast('تم تسجيل الخروج بنجاح', 'success');
+                window.location.href = 'login.html';
+            } catch (error) {
+                showToast('حدث خطأ في تسجيل الخروج', 'error');
+            }
+        });
+
+        document.getElementById('close-order-modal')?.addEventListener('click', () => {
+            orderModal.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+
+        orderModal?.addEventListener('click', (e) => {
+            if (e.target === orderModal) {
+                orderModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        async function loadOrders() {
+            try {
+                loadingContainer.style.display = 'flex';
+                document.getElementById('orders-content').style.display = 'none';
+
+                const result = await fetchOrders({
+                    page: currentPage,
+                    limit: 10,
+                    search: currentSearch,
+                    status: currentStatus
+                });
+
+                const tbody = document.getElementById('orders-table-body');
+                if (result.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="no-data">لا توجد طلبات</td></tr>';
+                } else {
+                    tbody.innerHTML = result.data.map(order => `
+                        <tr>
+                            <td>${order.customer_name}</td>
+                            <td>${order.customer_phone}</td>
+                            <td>${order.customer_email || '-'}</td>
+                            <td>${formatPrice(order.total_amount)}</td>
+                            <td><span class="status-badge status-${order.status}">${getStatusText(order.status)}</span></td>
+                            <td>${formatDate(order.created_at)}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon btn-view" data-id="${order.id}" title="عرض">
+                                        <span>👁️</span>
+                                    </button>
+                                    <button class="btn-icon btn-delete" data-id="${order.id}" title="حذف">
+                                        <span>🗑️</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    tbody.querySelectorAll('.btn-view').forEach(btn => {
+                        btn.addEventListener('click', () => viewOrder(btn.dataset.id));
+                    });
+
+                    tbody.querySelectorAll('.btn-delete').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.dataset.id;
+                            const confirmed = await showModal({
+                                title: 'حذف طلب',
+                                message: 'هل أنت متأكد من حذف هذا الطلب؟',
+                                confirmText: 'حذف',
+                                type: 'danger'
+                            });
+
+                            if (confirmed) {
+                                try {
+                                    await deleteOrder(id);
+                                    await loadOrders();
+                                } catch (error) {
+                                    console.error('Error deleting order:', error);
+                                }
+                            }
+                        });
+                    });
+                }
+
+                renderPagination(result.totalPages, result.page);
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            } finally {
+                loadingContainer.style.display = 'none';
+                document.getElementById('orders-content').style.display = 'block';
+            }
+        }
+
+        function renderPagination(totalPages, current) {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            html += `<button class="page-btn" ${current === 1 ? 'disabled' : ''} data-page="${current - 1}">السابق</button>`;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === current) {
+                    html += `<button class="page-btn active" disabled>${i}</button>`;
+                } else {
+                    html += `<button class="page-btn" data-page="${i}">${i}</button>`;
+                }
+            }
+
+            html += `<button class="page-btn" ${current === totalPages ? 'disabled' : ''} data-page="${current + 1}">التالي</button>`;
+            container.innerHTML = html;
+
+            container.querySelectorAll('.page-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const page = parseInt(btn.dataset.page);
+                    if (page && page !== current) {
+                        currentPage = page;
+                        loadOrders();
+                    }
+                });
+            });
+        }
+
+        async function viewOrder(id) {
+            try {
+                const order = await fetchOrderById(id);
+                const modalBody = document.getElementById('order-modal-body');
+
+                modalBody.innerHTML = `
+                    <div class="order-details">
+                        <div class="order-section">
+                            <h3>معلومات العميل</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">الاسم:</span>
+                                    <span class="info-value">${order.customer_name}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">الهاتف:</span>
+                                    <span class="info-value">${order.customer_phone}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">البريد:</span>
+                                    <span class="info-value">${order.customer_email || '-'}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">العنوان:</span>
+                                    <span class="info-value">${order.shipping_address || '-'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="order-section">
+                            <h3>عناصر الطلب</h3>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>المنتج</th>
+                                        <th>السعر</th>
+                                        <th>الكمية</th>
+                                        <th>المجموع</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${order.order_items?.map(item => `
+                                        <tr>
+                                            <td>${item.product_name}</td>
+                                            <td>${formatPrice(item.product_price)}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>${formatPrice(item.subtotal)}</td>
+                                        </tr>
+                                    `).join('') || '<tr><td colspan="4" class="no-data">لا توجد عناصر</td></tr>'}
+                                </tbody>
+                            </table>
+                            <div class="order-total">
+                                <span>الإجمالي:</span>
+                                <strong>${formatPrice(order.total_amount)}</strong>
+                            </div>
+                        </div>
+
+                        <div class="order-section">
+                            <h3>تحديث الحالة</h3>
+                            <div class="status-update">
+                                <select id="order-status" class="form-select">
+                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
+                                    <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>مؤكد</option>
+                                    <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>قيد المعالجة</option>
+                                    <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>تم الشحن</option>
+                                    <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>تم التسليم</option>
+                                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>ملغي</option>
+                                </select>
+                                <button class="btn btn-primary" id="update-status-btn">تحديث</button>
+                            </div>
+                            ${order.notes ? `<p class="order-notes"><strong>ملاحظات:</strong> ${order.notes}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+
+                orderModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+
+                document.getElementById('update-status-btn')?.addEventListener('click', async () => {
+                    const newStatus = document.getElementById('order-status').value;
+                    try {
+                        await updateOrderStatus(id, newStatus);
+                        orderModal.style.display = 'none';
+                        document.body.style.overflow = '';
+                        await loadOrders();
+                    } catch (error) {
+                        console.error('Error updating order status:', error);
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading order details:', error);
+            }
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'قيد الانتظار',
+                'confirmed': 'مؤكد',
+                'processing': 'قيد المعالجة',
+                'shipped': 'تم الشحن',
+                'delivered': 'تم التسليم',
+                'cancelled': 'ملغي'
+            };
+            return statusMap[status] || status;
+        }
+
+        document.getElementById('search-input')?.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            currentPage = 1;
+            loadOrders();
+        });
+
+        document.getElementById('status-filter')?.addEventListener('change', (e) => {
+            currentStatus = e.target.value;
+            currentPage = 1;
+            loadOrders();
+        });
+
+        async function init() {
+            const isAuth = await checkAuth();
+            if (!isAuth) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = await getCurrentUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.full_name || user.email;
+            }
+
+            await loadOrders();
+        }
+
+        init();
+    </script>
+</body>
+</html>

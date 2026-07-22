@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الفئات - لوحة التحكم</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand">
+                    <div class="sidebar-brand-icon">⌚</div>
+                    <div class="sidebar-brand-text">
+                        <h2>بوخاري للساعات</h2>
+                        <p>لوحة التحكم</p>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">القائمة الرئيسية</div>
+                    <a href="index.html" class="nav-item">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">الرئيسية</span>
+                    </a>
+                    <a href="products.html" class="nav-item">
+                        <span class="nav-icon">⌚</span>
+                        <span class="nav-text">المنتجات</span>
+                    </a>
+                    <a href="categories.html" class="nav-item active">
+                        <span class="nav-icon">📁</span>
+                        <span class="nav-text">الفئات</span>
+                    </a>
+                    <a href="orders.html" class="nav-item">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">الطلبات</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">خروج</div>
+                    <a href="../index.html" class="nav-item" target="_blank" rel="noopener noreferrer">
+                        <span class="nav-icon">🌐</span>
+                        <span class="nav-text">الموقع الرئيسي</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logout-btn">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-text">تسجيل الخروج</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div>
+                        <h2 class="topbar-title">إدارة الفئات</h2>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-details">
+                        <span class="user-name" id="user-name">المدير</span>
+                        <span class="user-role">مدير</span>
+                    </div>
+                    <div class="user-avatar">م</div>
+                </div>
+            </header>
+
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">إدارة الفئات</h1>
+                        <p class="page-subtitle">تنظيم وإدارة فئات المنتجات</p>
+                    </div>
+                    <button class="btn btn-primary" id="add-category-btn">
+                        <span>+ إضافة فئة</span>
+                    </button>
+                </div>
+
+                <div id="loading-container" class="loading-container" style="display: none;">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>جاري تحميل الفئات...</p>
+                    </div>
+                </div>
+
+                <div id="categories-content">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>الأيقونة</th>
+                                    <th>الاسم</th>
+                                    <th>الوصف</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categories-table-body">
+                                <tr>
+                                    <td colspan="5" class="no-data">جاري تحميل البيانات...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="category-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="category-modal-title">إضافة فئة</h3>
+                <button class="modal-close" id="close-category-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="category-form" class="category-form">
+                    <input type="hidden" id="category-id">
+
+                    <div class="form-group">
+                        <label for="category-name">اسم الفئة *</label>
+                        <input type="text" id="category-name" required class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category-description">الوصف</label>
+                        <textarea id="category-description" rows="3" class="form-textarea"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category-icon">الأيقونة</label>
+                            <input type="text" id="category-icon" placeholder="📦" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="category-slug">الرابط (Slug)</label>
+                            <input type="text" id="category-slug" placeholder="category-name" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="category-active" checked>
+                            <span>نشط</span>
+                        </label>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="cancel-category">إلغاء</button>
+                        <button type="submit" class="btn btn-primary" id="save-category-btn">
+                            <span>حفظ</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+    <div id="modal-container"></div>
+
+    <script type="module">
+        import { checkAuth, logout, getCurrentUser } from './js/auth.js';
+        import { showToast, showModal } from './js/ui.js';
+        import { fetchCategories, createCategory, updateCategory, deleteCategory } from './js/api.js';
+
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loadingContainer = document.getElementById('loading-container');
+        const categoryModal = document.getElementById('category-modal');
+        const categoryForm = document.getElementById('category-form');
+
+        let editingCategoryId = null;
+
+        mobileMenuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay?.classList.toggle('open');
+        });
+
+        sidebarOverlay?.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+        });
+
+        logoutBtn?.addEventListener('click', async () => {
+            try {
+                await logout();
+                showToast('تم تسجيل الخروج بنجاح', 'success');
+                window.location.href = 'login.html';
+            } catch (error) {
+                showToast('حدث خطأ في تسجيل الخروج', 'error');
+            }
+        });
+
+        document.getElementById('add-category-btn')?.addEventListener('click', () => {
+            openCategoryModal();
+        });
+
+        document.getElementById('close-category-modal')?.addEventListener('click', closeCategoryModal);
+        document.getElementById('cancel-category')?.addEventListener('click', closeCategoryModal);
+
+        categoryModal?.addEventListener('click', (e) => {
+            if (e.target === categoryModal) closeCategoryModal();
+        });
+
+        categoryForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const saveBtn = document.getElementById('save-category-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-small"></span> جاري الحفظ...';
+
+            try {
+                const categoryData = {
+                    name: document.getElementById('category-name').value,
+                    description: document.getElementById('category-description').value,
+                    icon: document.getElementById('category-icon').value || '📦',
+                    slug: document.getElementById('category-slug').value || document.getElementById('category-name').value.toLowerCase().replace(/\s+/g, '-'),
+                    is_active: document.getElementById('category-active').checked
+                };
+
+                if (editingCategoryId) {
+                    await updateCategory(editingCategoryId, categoryData);
+                } else {
+                    await createCategory(categoryData);
+                }
+
+                closeCategoryModal();
+                await loadCategories();
+            } catch (error) {
+                console.error('Error saving category:', error);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<span>حفظ</span>';
+            }
+        });
+
+        function openCategoryModal(category = null) {
+            editingCategoryId = category?.id || null;
+            document.getElementById('category-modal-title').textContent = category ? 'تعديل فئة' : 'إضافة فئة';
+
+            if (category) {
+                document.getElementById('category-id').value = category.id;
+                document.getElementById('category-name').value = category.name;
+                document.getElementById('category-description').value = category.description || '';
+                document.getElementById('category-icon').value = category.icon || '📦';
+                document.getElementById('category-slug').value = category.slug || '';
+                document.getElementById('category-active').checked = category.is_active !== false;
+            } else {
+                categoryForm.reset();
+                document.getElementById('category-active').checked = true;
+            }
+
+            categoryModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCategoryModal() {
+            categoryModal.style.display = 'none';
+            document.body.style.overflow = '';
+            editingCategoryId = null;
+        }
+
+        async function loadCategories() {
+            try {
+                loadingContainer.style.display = 'flex';
+                document.getElementById('categories-content').style.display = 'none';
+
+                const categories = await fetchCategories();
+                const tbody = document.getElementById('categories-table-body');
+
+                if (categories.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="no-data">لا توجد فئات</td></tr>';
+                } else {
+                    tbody.innerHTML = categories.map(category => `
+                        <tr>
+                            <td><span class="category-icon-large">${category.icon}</span></td>
+                            <td>${category.name}</td>
+                            <td>${category.description || '-'}</td>
+                            <td><span class="status-badge ${category.is_active ? 'status-active' : 'status-inactive'}">${category.is_active ? 'نشط' : 'غير نشط'}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon btn-edit" data-id="${category.id}" title="تعديل">
+                                        <span>✏️</span>
+                                    </button>
+                                    <button class="btn-icon btn-delete" data-id="${category.id}" title="حذف">
+                                        <span>🗑️</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    tbody.querySelectorAll('.btn-edit').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const category = categories.find(c => c.id === btn.dataset.id);
+                            if (category) openCategoryModal(category);
+                        });
+                    });
+
+                    tbody.querySelectorAll('.btn-delete').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.dataset.id;
+                            const confirmed = await showModal({
+                                title: 'حذف فئة',
+                                message: 'هل أنت متأكد من حذف هذه الفئة؟',
+                                confirmText: 'حذف',
+                                type: 'danger'
+                            });
+
+                            if (confirmed) {
+                                try {
+                                    await deleteCategory(id);
+                                    await loadCategories();
+                                } catch (error) {
+                                    console.error('Error deleting category:', error);
+                                }
+                            }
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            } finally {
+                loadingContainer.style.display = 'none';
+                document.getElementById('categories-content').style.display = 'block';
+            }
+        }
+
+        async function init() {
+            const isAuth = await checkAuth();
+            if (!isAuth) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = await getCurrentUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.full_name || user.email;
+            }
+
+            await loadCategories();
+        }
+
+        init();
+    </script>
+</body>
+</html>

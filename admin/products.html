@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المنتجات - لوحة التحكم</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand">
+                    <div class="sidebar-brand-icon">⌚</div>
+                    <div class="sidebar-brand-text">
+                        <h2>بوخاري للساعات</h2>
+                        <p>لوحة التحكم</p>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">القائمة الرئيسية</div>
+                    <a href="index.html" class="nav-item">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">الرئيسية</span>
+                    </a>
+                    <a href="products.html" class="nav-item active">
+                        <span class="nav-icon">⌚</span>
+                        <span class="nav-text">المنتجات</span>
+                    </a>
+                    <a href="categories.html" class="nav-item">
+                        <span class="nav-icon">📁</span>
+                        <span class="nav-text">الفئات</span>
+                    </a>
+                    <a href="orders.html" class="nav-item">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">الطلبات</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">خروج</div>
+                    <a href="../index.html" class="nav-item" target="_blank" rel="noopener noreferrer">
+                        <span class="nav-icon">🌐</span>
+                        <span class="nav-text">الموقع الرئيسي</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logout-btn">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-text">تسجيل الخروج</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div>
+                        <h2 class="topbar-title">إدارة المنتجات</h2>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-details">
+                        <span class="user-name" id="user-name">المدير</span>
+                        <span class="user-role">مدير</span>
+                    </div>
+                    <div class="user-avatar">م</div>
+                </div>
+            </header>
+
+            <div class="content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">إدارة المنتجات</h1>
+                        <p class="page-subtitle">إضافة، تعديل وإدارة منتجات متجرك</p>
+                    </div>
+                    <button class="btn btn-primary" id="add-product-btn">
+                        <span>+ إضافة منتج</span>
+                    </button>
+                </div>
+
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="البحث عن منتج..."
+                            class="form-input"
+                        >
+                    </div>
+                    <select id="category-filter" class="form-select">
+                        <option value="">كل الفئات</option>
+                    </select>
+                    <select id="sort-select" class="form-select">
+                        <option value="created_at-desc">الأحدث أولاً</option>
+                        <option value="created_at-asc">الأقدم أولاً</option>
+                        <option value="price-asc">السعر: من الأقل</option>
+                        <option value="price-desc">السعر: من الأعلى</option>
+                        <option value="name-asc">الاسم: أ-ي</option>
+                    </select>
+                </div>
+
+                <div id="loading-container" class="loading-container" style="display: none;">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>جاري تحميل المنتجات...</p>
+                    </div>
+                </div>
+
+                <div id="products-content">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>الفئة</th>
+                                    <th>السعر</th>
+                                    <th>الخصم</th>
+                                    <th>المخزون</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body">
+                                <tr>
+                                    <td colspan="7" class="no-data">جاري تحميل البيانات...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="product-modal" class="modal-overlay" style="display: none;">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title" id="product-modal-title">إضافة منتج</h3>
+                <button class="modal-close" id="close-product-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="product-form" class="product-form">
+                    <input type="hidden" id="product-id">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-name">اسم المنتج *</label>
+                            <input type="text" id="product-name" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-category">الفئة *</label>
+                            <select id="product-category" required class="form-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-price">السعر (ر.س) *</label>
+                            <input type="number" id="product-price" step="0.01" min="0" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-discount">نسبة الخصم (%)</label>
+                            <input type="number" id="product-discount" min="0" max="100" value="0" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-description">الوصف *</label>
+                        <textarea id="product-description" rows="4" required class="form-textarea"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-specifications">المواصفات (JSON)</label>
+                        <textarea id="product-specifications" rows="4" placeholder='{"Movement": "Quartz", "Case Material": "Steel"}' class="form-textarea code-input"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-colors">الألوان (مفصولة بفاصلة)</label>
+                            <input type="text" id="product-colors" placeholder="أسود، فضي، أزرق" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-stock">الكمية في المخزون</label>
+                            <input type="number" id="product-stock" min="0" value="0" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>الصور</label>
+                        <div class="image-upload-area" id="image-upload-area">
+                            <input type="file" id="product-images" multiple accept="image/*" style="display: none;">
+                            <button type="button" class="btn btn-secondary" id="upload-images-btn">
+                                <span>📤 رفع صور</span>
+                            </button>
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="product-featured">
+                            <span>منتج مميز</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="product-best-seller">
+                            <span>الأكثر مبيعاً</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="product-offer">
+                            <span>عرض خاص</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="product-active" checked>
+                            <span>نشط</span>
+                        </label>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="cancel-product">إلغاء</button>
+                        <button type="submit" class="btn btn-primary" id="save-product-btn">
+                            <span>حفظ</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+    <div id="modal-container"></div>
+
+    <script type="module">
+        import { checkAuth, logout, getCurrentUser } from './js/auth.js';
+        import { supabase } from './js/config.js';
+        import { showToast, showModal, formatPrice } from './js/ui.js';
+        import {
+            fetchCategories,
+            fetchProducts,
+            createProduct,
+            updateProduct,
+            deleteProduct,
+            fetchProductById
+        } from './js/api.js';
+        import { uploadProductImage, deleteProductImage, uploadMultipleImages } from './js/upload.js';
+
+        let currentPage = 1;
+        let currentSearch = '';
+        let currentCategory = '';
+        let currentSort = 'created_at-desc';
+        let editingProductId = null;
+        let uploadedImages = [];
+        let pendingFiles = [];
+
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loadingContainer = document.getElementById('loading-container');
+        const productModal = document.getElementById('product-modal');
+        const productForm = document.getElementById('product-form');
+
+        mobileMenuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay?.classList.toggle('open');
+        });
+
+        sidebarOverlay?.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+        });
+
+        logoutBtn?.addEventListener('click', async () => {
+            try {
+                await logout();
+                showToast('تم تسجيل الخروج بنجاح', 'success');
+                window.location.href = 'login.html';
+            } catch (error) {
+                showToast('حدث خطأ في تسجيل الخروج', 'error');
+            }
+        });
+
+        document.getElementById('add-product-btn')?.addEventListener('click', () => {
+            openProductModal();
+        });
+
+        document.getElementById('close-product-modal')?.addEventListener('click', closeProductModal);
+        document.getElementById('cancel-product')?.addEventListener('click', closeProductModal);
+
+        productModal?.addEventListener('click', (e) => {
+            if (e.target === productModal) closeProductModal();
+        });
+
+        document.getElementById('upload-images-btn')?.addEventListener('click', () => {
+            document.getElementById('product-images').click();
+        });
+
+        document.getElementById('product-images')?.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            const preview = document.getElementById('image-preview');
+            preview.innerHTML = '<p>جاري رفع الصور...</p>';
+
+            try {
+                if (editingProductId) {
+                    const results = await uploadMultipleImages(files, editingProductId);
+                    uploadedImages.push(...results);
+
+                    preview.innerHTML = uploadedImages.map(img => `
+                        <div class="image-preview-item">
+                            <img src="${img.url}" alt="صورة المنتج">
+                            <button type="button" class="remove-image" data-url="${img.url}">×</button>
+                        </div>
+                    `).join('');
+
+                    preview.querySelectorAll('.remove-image').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const url = btn.dataset.url;
+                            uploadedImages = uploadedImages.filter(img => img.url !== url);
+                            btn.parentElement.remove();
+                        });
+                    });
+                } else {
+                    pendingFiles.push(...files);
+                    preview.innerHTML = pendingFiles.map(file => {
+                        const url = URL.createObjectURL(file);
+                        return `<div class="image-preview-item">
+                            <img src="${url}" alt="صورة المنتج">
+                        </div>`;
+                    }).join('');
+                }
+            } catch (error) {
+                preview.innerHTML = '<p class="error-text">حدث خطأ في رفع الصور</p>';
+            }
+        });
+
+        productForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const saveBtn = document.getElementById('save-product-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-small"></span> جاري الحفظ...';
+
+            try {
+                const productData = {
+                    name: document.getElementById('product-name').value,
+                    category_id: document.getElementById('product-category').value,
+                    price: parseFloat(document.getElementById('product-price').value),
+                    discount: parseInt(document.getElementById('product-discount').value) || 0,
+                    description: document.getElementById('product-description').value,
+                    specifications: JSON.parse(document.getElementById('product-specifications').value || '{}'),
+                    colors: document.getElementById('product-colors').value.split('،').map(c => c.trim()).filter(c => c),
+                    stock: parseInt(document.getElementById('product-stock').value) || 0,
+                    best_seller: document.getElementById('product-best-seller').checked,
+                    featured: document.getElementById('product-featured').checked,
+                    offer: document.getElementById('product-offer').checked,
+                    is_active: document.getElementById('product-active').checked
+                };
+
+                if (editingProductId) {
+                    await updateProduct(editingProductId, productData);
+                    if (uploadedImages.length > 0) {
+                        for (const img of uploadedImages) {
+                            await supabase.from('product_images').upsert({
+                                product_id: editingProductId,
+                                url: img.url,
+                                path: img.path
+                            });
+                        }
+                    }
+                } else {
+                    const product = await createProduct(productData);
+                    if (pendingFiles.length > 0) {
+                        const results = await uploadMultipleImages(pendingFiles, product.id);
+                        for (const img of results) {
+                            await supabase.from('product_images').insert({
+                                product_id: product.id,
+                                url: img.url,
+                                path: img.path
+                            });
+                        }
+                        pendingFiles = [];
+                    }
+                }
+
+                closeProductModal();
+                await loadProducts();
+            } catch (error) {
+                console.error('Error saving product:', error);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<span>حفظ</span>';
+            }
+        });
+
+        async function openProductModal(product = null) {
+            editingProductId = product?.id || null;
+            uploadedImages = [];
+            pendingFiles = [];
+
+            document.getElementById('product-modal-title').textContent = product ? 'تعديل منتج' : 'إضافة منتج';
+
+            if (product) {
+                document.getElementById('product-id').value = product.id;
+                document.getElementById('product-name').value = product.name;
+                document.getElementById('product-category').value = product.category_id || '';
+                document.getElementById('product-price').value = product.price;
+                document.getElementById('product-discount').value = product.discount || 0;
+                document.getElementById('product-description').value = product.description;
+                document.getElementById('product-specifications').value = JSON.stringify(product.specifications || {}, null, 2);
+                document.getElementById('product-colors').value = (product.colors || []).join('،');
+                document.getElementById('product-stock').value = product.stock || 0;
+                document.getElementById('product-featured').checked = product.featured || false;
+                document.getElementById('product-best-seller').checked = product.best_seller || false;
+                document.getElementById('product-offer').checked = product.offer || false;
+                document.getElementById('product-active').checked = product.is_active !== false;
+
+                const preview = document.getElementById('image-preview');
+                if (product.product_images?.length > 0) {
+                    preview.innerHTML = product.product_images.map(img => `
+                        <div class="image-preview-item">
+                            <img src="${img.url}" alt="صورة المنتج">
+                            <button type="button" class="remove-image" data-url="${img.url}">×</button>
+                        </div>
+                    `).join('');
+                } else {
+                    preview.innerHTML = '';
+                }
+            } else {
+                productForm.reset();
+                document.getElementById('product-active').checked = true;
+                document.getElementById('image-preview').innerHTML = '';
+            }
+
+            productModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProductModal() {
+            productModal.style.display = 'none';
+            document.body.style.overflow = '';
+            editingProductId = null;
+            uploadedImages = [];
+            pendingFiles = [];
+        }
+
+        async function loadProducts() {
+            try {
+                loadingContainer.style.display = 'flex';
+                document.getElementById('products-content').style.display = 'none';
+
+                const [sortField, sortOrder] = currentSort.split('-');
+                const result = await fetchProducts({
+                    page: currentPage,
+                    limit: 10,
+                    search: currentSearch,
+                    category: currentCategory,
+                    sortBy: sortField,
+                    sortOrder: sortOrder
+                });
+
+                const tbody = document.getElementById('products-table-body');
+                if (result.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="no-data">لا توجد منتجات</td></tr>';
+                } else {
+                    tbody.innerHTML = result.data.map(product => {
+                        const lowerName = (product.name || '').toLowerCase();
+                        let fallbackImage = '/images/watch.svg';
+                        if (lowerName.includes('benyar')) fallbackImage = '/images/benyar/benyar product 1 pic 1.jpg';
+                        else if (lowerName.includes('casio') || lowerName.includes('g-shock')) fallbackImage = '/images/casio/casio watches product 1 pic 1.png';
+                        else if (lowerName.includes('rolex')) fallbackImage = '/images/rolex/rolex watches product 1 pic 1.png';
+
+                        const sortedImages = (product.product_images || []).sort((a, b) => (a.position || 0) - (b.position || 0));
+
+                        return `
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <img src="${sortedImages[0]?.url || fallbackImage}" alt="${product.name}" class="product-thumb" onerror="this.src='${fallbackImage}'">
+                                        <span>${product.name}</span>
+                                    </div>
+                                </td>
+                                <td>${product.categories?.name || '-'}</td>
+                                <td>${formatPrice(product.price)}</td>
+                                <td>${product.discount}%</td>
+                                <td>${product.stock}</td>
+                                <td><span class="status-badge ${product.is_active ? 'status-active' : 'status-inactive'}">${product.is_active ? 'نشط' : 'غير نشط'}</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-edit" data-id="${product.id}" title="تعديل">
+                                            <span>✏️</span>
+                                        </button>
+                                        <button class="btn-icon btn-delete" data-id="${product.id}" title="حذف">
+                                            <span>🗑️</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                    tbody.querySelectorAll('.btn-edit').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.dataset.id;
+                            try {
+                                const product = await fetchProductById(id);
+                                await openProductModal(product);
+                            } catch (error) {
+                                console.error('Error loading product:', error);
+                            }
+                        });
+                    });
+
+                    tbody.querySelectorAll('.btn-delete').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const id = btn.dataset.id;
+                            const confirmed = await showModal({
+                                title: 'حذف منتج',
+                                message: 'هل أنت متأكد من حذف هذا المنتج؟',
+                                confirmText: 'حذف',
+                                type: 'danger'
+                            });
+
+                            if (confirmed) {
+                                try {
+                                    await deleteProduct(id);
+                                    await loadProducts();
+                                } catch (error) {
+                                    console.error('Error deleting product:', error);
+                                }
+                            }
+                        });
+                    });
+                }
+
+                renderPagination(result.totalPages, result.page);
+            } catch (error) {
+                console.error('Error loading products:', error);
+            } finally {
+                loadingContainer.style.display = 'none';
+                document.getElementById('products-content').style.display = 'block';
+            }
+        }
+
+        function renderPagination(totalPages, current) {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            html += `<button class="page-btn" ${current === 1 ? 'disabled' : ''} data-page="${current - 1}">السابق</button>`;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === current) {
+                    html += `<button class="page-btn active" disabled>${i}</button>`;
+                } else {
+                    html += `<button class="page-btn" data-page="${i}">${i}</button>`;
+                }
+            }
+
+            html += `<button class="page-btn" ${current === totalPages ? 'disabled' : ''} data-page="${current + 1}">التالي</button>`;
+            container.innerHTML = html;
+
+            container.querySelectorAll('.page-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const page = parseInt(btn.dataset.page);
+                    if (page && page !== current) {
+                        currentPage = page;
+                        loadProducts();
+                    }
+                });
+            });
+        }
+
+        async function loadCategories() {
+            try {
+                const categories = await fetchCategories();
+                const select = document.getElementById('category-filter');
+                const productCategorySelect = document.getElementById('product-category');
+
+                const options = '<option value="">كل الفئات</option>' +
+                    categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+
+                if (select) select.innerHTML = options;
+                if (productCategorySelect) productCategorySelect.innerHTML = categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        document.getElementById('search-input')?.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            currentPage = 1;
+            loadProducts();
+        });
+
+        document.getElementById('category-filter')?.addEventListener('change', (e) => {
+            currentCategory = e.target.value;
+            currentPage = 1;
+            loadProducts();
+        });
+
+        document.getElementById('sort-select')?.addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            currentPage = 1;
+            loadProducts();
+        });
+
+        async function init() {
+            const isAuth = await checkAuth();
+            if (!isAuth) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = await getCurrentUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.full_name || user.email;
+            }
+
+            await loadCategories();
+            await loadProducts();
+        }
+
+        init();
+    </script>
+</body>
+</html>
