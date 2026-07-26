@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="no-referrer">
     <title>إدارة المنتجات - لوحة التحكم</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -168,7 +170,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="product-price">السعر (ر.س) *</label>
+                            <label for="product-price">السعر (DA) *</label>
                             <input type="number" id="product-price" step="0.01" min="0" required class="form-input">
                         </div>
                         <div class="form-group">
@@ -255,6 +257,12 @@
             fetchProductById
         } from './js/api.js';
         import { uploadProductImage, deleteProductImage, uploadMultipleImages } from './js/upload.js';
+        import { getCsrfToken, setupNavigationGuard, setupSecureAttribute, setupSensitiveFormProtection } from './js/protection.js';
+
+        const ADMIN_PATHS = ['/', '/index.html', '/products.html', '/categories.html', '/orders.html'];
+        setupNavigationGuard(ADMIN_PATHS.map(path => `/admin${path}`));
+
+        setupSecureAttribute(document.querySelector('a[href="../index.html"]'), 'href', ['https', 'http']);
 
         let currentPage = 1;
         let currentSearch = '';
@@ -283,12 +291,21 @@
         });
 
         logoutBtn?.addEventListener('click', async () => {
-            try {
-                await logout();
-                showToast('تم تسجيل الخروج بنجاح', 'success');
-                window.location.href = 'login.html';
-            } catch (error) {
-                showToast('حدث خطأ في تسجيل الخروج', 'error');
+            const confirmed = await showModal({
+                title: 'تسجيل الخروج',
+                message: 'هل أنت متأكد من تسجيل الخروج؟',
+                confirmText: 'خروج',
+                type: 'warning'
+            });
+
+            if (confirmed) {
+                try {
+                    await logout();
+                    showToast('تم تسجيل الخروج بنجاح', 'success');
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    showToast('حدث خطأ في تسجيل الخروج', 'error');
+                }
             }
         });
 
@@ -327,8 +344,13 @@
                     `).join('');
 
                     preview.querySelectorAll('.remove-image').forEach(btn => {
-                        btn.addEventListener('click', () => {
+                        btn.addEventListener('click', async () => {
                             const url = btn.dataset.url;
+                            try {
+                                await deleteProductImage(url);
+                            } catch (error) {
+                                console.error('Error deleting uploaded image:', error);
+                            }
                             uploadedImages = uploadedImages.filter(img => img.url !== url);
                             btn.parentElement.remove();
                         });
@@ -431,11 +453,30 @@
                 const preview = document.getElementById('image-preview');
                 if (product.product_images?.length > 0) {
                     preview.innerHTML = product.product_images.map(img => `
-                        <div class="image-preview-item">
+                        <div class="image-preview-item" data-id="${img.id}">
                             <img src="${img.url}" alt="صورة المنتج">
                             <button type="button" class="remove-image" data-url="${img.url}">×</button>
                         </div>
                     `).join('');
+
+                    preview.querySelectorAll('.remove-image').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const item = btn.closest('.image-preview-item');
+                            const url = btn.dataset.url;
+                            try {
+                                await deleteProductImage(url);
+                                const imageId = item.dataset.id;
+                                if (imageId) {
+                                    await supabase.from('product_images').delete().eq('id', imageId);
+                                }
+                                item.remove();
+                                showToast('تم حذف الصورة بنجاح', 'success');
+                            } catch (error) {
+                                console.error('Error deleting image:', error);
+                                showToast('حدث خطأ في حذف الصورة', 'error');
+                            }
+                        });
+                    });
                 } else {
                     preview.innerHTML = '';
                 }
@@ -622,6 +663,12 @@
         });
 
         async function init() {
+            const csrfToken = getCsrfToken();
+            if (!csrfToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+
             const isAuth = await checkAuth();
             if (!isAuth) {
                 window.location.href = 'login.html';

@@ -2,13 +2,11 @@ import { supabase } from './config.js';
 import { showToast } from './ui.js';
 
 const BUCKET_NAME = 'PRODUCT-IMAGES';
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 export async function uploadProductImage(file, productId) {
     try {
         if (!file) throw new Error('الرجاء اختيار صورة');
-        if (file.size > MAX_FILE_SIZE) throw new Error('حجم الصورة يجب أن يكون أقل من 5 ميجابايت');
         if (!ALLOWED_TYPES.includes(file.type)) throw new Error('نوع الصورة غير مدعوم. استخدم JPEG, PNG, أو WebP');
 
         const fileExt = file.name.split('.').pop().toLowerCase();

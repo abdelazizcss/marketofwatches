@@ -20,7 +20,7 @@ export function showToast(message, type = 'success', duration = 3000) {
 }
 
 export function showModal(options = {}) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const {
             title = 'تأكيد',
             message = 'هل أنت متأكد؟',
@@ -55,45 +55,44 @@ export function showModal(options = {}) {
         const close = () => {
             modal.classList.add('modal-hide');
             setTimeout(() => {
-                modal.remove();
+                if (modal.parentNode) {
+                    modal.remove();
+                }
                 document.body.style.overflow = '';
-            }, 300);
+            }, 200);
         };
 
-        modal.querySelector('.modal-close').addEventListener('click', () => {
+        const finish = (value) => {
             close();
-            if (onCancel) onCancel();
-            resolve(false);
-        });
+            resolve(value);
+        };
 
-        modal.querySelector('.modal-cancel').addEventListener('click', () => {
-            close();
-            if (onCancel) onCancel();
-            resolve(false);
-        });
+        try {
+            const closeBtn = modal.querySelector('.modal-close');
+            const cancelBtn = modal.querySelector('.modal-cancel');
+            const confirmBtn = modal.querySelector('.modal-confirm');
 
-        modal.querySelector('.modal-confirm').addEventListener('click', () => {
-            close();
-            if (onConfirm) onConfirm();
-            resolve(true);
-        });
+            if (closeBtn) closeBtn.addEventListener('click', () => finish(false));
+            if (cancelBtn) cancelBtn.addEventListener('click', () => finish(false));
+            if (confirmBtn) confirmBtn.addEventListener('click', () => finish(true));
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                close();
-                if (onCancel) onCancel();
-                resolve(false);
-            }
-        });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) finish(false);
+            });
 
-        document.addEventListener('keydown', function handler(e) {
-            if (e.key === 'Escape') {
-                close();
-                document.removeEventListener('keydown', handler);
-                if (onCancel) onCancel();
-                resolve(false);
-            }
-        });
+            const handler = (e) => {
+                if (e.key === 'Escape') {
+                    document.removeEventListener('keydown', handler);
+                    finish(false);
+                }
+            };
+            document.addEventListener('keydown', handler);
+        } catch (error) {
+            console.error('Modal setup error:', error);
+            if (modal.parentNode) modal.remove();
+            document.body.style.overflow = '';
+            resolve(window.confirm(message));
+        }
     });
 }
 
@@ -129,7 +128,7 @@ export function formatDate(dateString) {
 }
 
 export function formatPrice(price) {
-    return `${Number(price).toFixed(2)} ر.س`;
+    return `${Number(price).toFixed(2)} DA`;
 }
 
 export function getDiscountedPrice(price, discount) {

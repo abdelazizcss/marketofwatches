@@ -308,7 +308,9 @@ WHERE url LIKE '%/product-images/%';
 INSERT INTO public.categories (id, name, description, icon, slug) VALUES
     ('11111111-1111-1111-1111-111111111111', 'Men''s Watches', 'Discover our collection of stylish and affordable men''s watches.', '👔', 'mens-watches'),
     ('22222222-2222-2222-2222-222222222222', 'Women''s Watches', 'Elegant and trendy watches for every occasion.', '👗', 'womens-watches'),
-    ('33333333-3333-3333-3333-333333333333', 'Sports Watches', 'Durable and functional sports watches for an active lifestyle.', '🏃', 'sports-watches')
+    ('33333333-3333-3333-3333-333333333333', 'Sports Watches', 'Durable and functional sports watches for an active lifestyle.', '🏃', 'sports-watches'),
+    ('44444444-4444-4444-4444-444444444444', 'Children''s Watches', 'Fun and colorful watches designed for kids.', '👶', 'childrens-watches'),
+    ('55555555-5555-5555-5555-555555555555', 'Smart Watches', 'Discover the latest advanced smart watches.', '⌚', 'smart-watches')
 ON CONFLICT (slug) DO NOTHING;
 
 -- Insert sample products

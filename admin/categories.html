@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="no-referrer">
     <title>إدارة الفئات - لوحة التحكم</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -176,6 +178,12 @@
         import { checkAuth, logout, getCurrentUser } from './js/auth.js';
         import { showToast, showModal } from './js/ui.js';
         import { fetchCategories, createCategory, updateCategory, deleteCategory } from './js/api.js';
+        import { getCsrfToken, setupNavigationGuard, setupSecureAttribute } from './js/protection.js';
+
+        const ADMIN_PATHS = ['/', '/index.html', '/products.html', '/categories.html', '/orders.html'];
+        setupNavigationGuard(ADMIN_PATHS.map(path => `/admin${path}`));
+
+        setupSecureAttribute(document.querySelector('a[href="../index.html"]'), 'href', ['https', 'http']);
 
         const sidebar = document.getElementById('sidebar');
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -198,12 +206,21 @@
         });
 
         logoutBtn?.addEventListener('click', async () => {
-            try {
-                await logout();
-                showToast('تم تسجيل الخروج بنجاح', 'success');
-                window.location.href = 'login.html';
-            } catch (error) {
-                showToast('حدث خطأ في تسجيل الخروج', 'error');
+            const confirmed = await showModal({
+                title: 'تسجيل الخروج',
+                message: 'هل أنت متأكد من تسجيل الخروج؟',
+                confirmText: 'خروج',
+                type: 'warning'
+            });
+
+            if (confirmed) {
+                try {
+                    await logout();
+                    showToast('تم تسجيل الخروج بنجاح', 'success');
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    showToast('حدث خطأ في تسجيل الخروج', 'error');
+                }
             }
         });
 
@@ -343,6 +360,12 @@
         }
 
         async function init() {
+            const csrfToken = getCsrfToken();
+            if (!csrfToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+
             const isAuth = await checkAuth();
             if (!isAuth) {
                 window.location.href = 'login.html';

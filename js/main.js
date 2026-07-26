@@ -2,166 +2,11 @@ const SUPABASE_URL = "https://shybnvruiojqlcdvbgzo.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_T3Rv7KgqaZ59UT2FbauSMA_z9z7pRyr";
 
 const EMBEDDED_DATA = {
-    products: [
-      {
-        "id": 13,
-        "name": "Rolex Oyster Perpetual",
-        "category": "men",
-        "price": 4500,
-        "discount": 5,
-        "description": "أيقونة الفخامة والتميز. حركة أوتوماتيكية دقيقة، جرام من الفولاذ المقاوم للصدأ، وتصميم كلاسيكي خالد يناسب جميع المناسبات.",
-        "specifications": {
-          "Movement": "Automatic",
-          "Case Material": "Oystersteel",
-          "Water Resistance": "100m",
-          "Band Material": "Stainless Steel",
-          "Case Diameter": "41mm"
-        },
-        "colors": ["Black", "Silver", "Blue"],
-        "bestSeller": true,
-        "featured": true,
-        "offer": true,
-        "stock": 2,
-        "images": [
-          "images/rolex/rolex watches product 1 pic 1.png",
-          "images/rolex/rolex watches product 1 pic 2.png",
-          "images/rolex/rolex watches product 1 pic 3.png"
-        ]
-      },
-      {
-        "id": 14,
-        "name": "Casio G-Shock",
-        "category": "sports",
-        "price": 320,
-        "discount": 15,
-        "description": "قوة وموثوقية في تصميم عصري. مقاومة للصدمات، ماء حتى 200م، مع وظائف متعددة تشمل chronograph و alarm و world time.",
-        "specifications": {
-          "Movement": "Digital Quartz",
-          "Case Material": "Resin",
-          "Water Resistance": "200m",
-          "Band Material": "Resin",
-          "Case Diameter": "48mm"
-        },
-        "colors": ["Black", "Red", "Green"],
-        "bestSeller": false,
-        "featured": true,
-        "offer": true,
-        "stock": 4,
-        "images": [
-          "images/casio/casio watches product 1 pic 1.png",
-          "images/casio/casio watches product 1 pic 2.png",
-          "images/casio/casio watches product 1 pic 3.png"
-        ]
-      }
-    ],
+    
     categories: [
-      {
-        "id": "men",
-        "name": "ساعات رجالية",
-        "description": "اكتشف مجموعتنا من الساعات الرجالية الأنيقة بأسعار معقولة.",
-        "icon": "images/categories/men-watch.png"
-      },
-      {
-        "id": "women",
-        "name": "ساعات نسائية",
-        "description": "ساعات أنيقة وعصرية لكل المناسبات.",
-        "icon": "images/categories/women-watch.png"
-      },
-      {
-        "id": "sports",
-        "name": "ساعات رياضية",
-        "description": "ساعات رياضية متينة وعملية لنمط حياة نشيط.",
-        "icon": "images/categories/sports-watch.png"
-      },
-      {
-        "id": "children",
-        "name": "ساعات أطفال",
-        "description": "مجموعة ممتعة وملونة من الساعات المخصصة للأطفال.",
-        "icon": "images/categories/children-watch.png"
-      },
-      {
-        "id": "tech",
-        "name": "ساعات ذكية",
-        "description": "اكتشف أحدث الساعات الذكية المتطورة.",
-        "icon": "images/categories/smart-watch.png"
-      }
+    
+   
     ],
-    reviews: [
-      {
-        "id": 1,
-        "name": "Ahmed Al-Rashid",
-        "rating": 5,
-        "text": "Excellent quality watches at great prices. Fast delivery and friendly service!",
-        "date": "2024-12-10"
-      },
-      {
-        "id": 2,
-        "name": "Sara Mahmoud",
-        "rating": 5,
-        "text": "Bought a watch for my husband and he loves it. Will definitely order again.",
-        "date": "2024-11-28"
-      },
-      {
-        "id": 3,
-        "name": "Omar Khalil",
-        "rating": 4,
-        "text": "Good value for money. The watch looks exactly as shown in the pictures.",
-        "date": "2024-11-15"
-      },
-      {
-        "id": 4,
-        "name": "Layla Hassan",
-        "rating": 5,
-        "text": "Amazing collection! Found the perfect gift for my sister. Highly recommended.",
-        "date": "2024-10-30"
-      },
-      {
-        "id": 5,
-        "name": "Youssef Ali",
-        "rating": 4,
-        "text": "Very satisfied with my purchase. The ordering process was smooth and easy.",
-        "date": "2024-10-18"
-      },
-      {
-        "id": 6,
-        "name": "Nour El-Din",
-        "rating": 5,
-        "text": "Best watch store in town. Great customer support and reliable products.",
-        "date": "2024-10-05"
-      }
-    ],
-    faq: [
-      {
-        "id": 1,
-        "question": "How do I place an order?",
-        "answer": "Simply browse our collection, find the watch you like, and click the 'Order via WhatsApp' button. Our team will assist you with the order details and delivery."
-      },
-      {
-        "id": 2,
-        "question": "Do you offer delivery?",
-        "answer": "Yes, we offer fast delivery to all areas. Delivery fees and timelines will be confirmed when you contact us via WhatsApp."
-      },
-      {
-        "id": 3,
-        "question": "What payment methods do you accept?",
-        "answer": "We accept cash on delivery, bank transfers, and mobile payment methods. Details will be provided when you order."
-      },
-      {
-        "id": 4,
-        "question": "Can I return or exchange a watch?",
-        "answer": "Yes, we accept returns and exchanges within 7 days of delivery, provided the watch is in its original condition and packaging."
-      },
-      {
-        "id": 5,
-        "question": "Are your watches original?",
-        "answer": "We sell high-quality fashion watches that offer excellent value. All products come with a 6-month warranty against manufacturing defects."
-      },
-      {
-        "id": 6,
-        "question": "Do you ship internationally?",
-        "answer": "Currently, we only ship within the country. International shipping may be available upon request - please contact us for more details."
-      }
-    ]
 };
 
 /* =========================================
@@ -174,7 +19,8 @@ const state = {
     faq: [],
     currentCategory: 'all',
     currentSort: 'default',
-    searchQuery: ''
+    searchQuery: '',
+    categoriesWithProducts: new Set()
 };
 
 const WHATSAPP_NUMBER = '213799442733';
@@ -183,7 +29,7 @@ const WHATSAPP_NUMBER = '213799442733';
      Utility Functions
     ========================================= */
 function formatPrice(price) {
-    return `${price} ر.س`;
+    return `${price} DA`;
 }
 
 function getDiscountedPrice(price, discount) {
@@ -337,6 +183,8 @@ async function loadData() {
             return cat;
         });
 
+        state.categoriesWithProducts = new Set(state.products.map(p => p.category));
+
         state.reviews = EMBEDDED_DATA.reviews;
         state.faq = EMBEDDED_DATA.faq;
     } catch (error) {
@@ -477,22 +325,24 @@ function renderOffers() {
 }
 
 function renderCategories() {
-    const container = document.getElementById('categories-grid');
-    if (!container) return;
-    const cardsHtml = state.categories.map(cat => {
-        const iconHtml = cat.icon.match(/^https?:\/\//) || cat.icon.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)
-            ? `<img src="${cat.icon}" alt="${cat.name}" class="category-icon-img" loading="lazy">`
-            : `<span class="category-icon">${cat.icon}</span>`;
-        return `
-            <a href="shop.html?category=${cat.id}" class="category-card">
-                ${iconHtml}
-                <h3 class="category-name">${cat.name}</h3>
-                <p class="category-desc">${cat.description}</p>
-            </a>
-        `;
-    }).join('');
-    container.innerHTML = cardsHtml;
-}
+     const container = document.getElementById('categories-grid');
+     if (!container) return;
+     const cardsHtml = state.categories.map(cat => {
+         const isEmpty = !state.categoriesWithProducts.has(cat.id);
+         const iconHtml = cat.icon.match(/^https?:\/\//) || cat.icon.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)
+             ? `<img src="${cat.icon}" alt="${cat.name}" class="category-icon-img" loading="lazy">`
+             : `<span class="category-icon">${cat.icon}</span>`;
+         return `
+             <a href="shop.html?category=${cat.id}" class="category-card ${isEmpty ? 'category-empty' : ''}">
+                 ${iconHtml}
+                 <h3 class="category-name">${cat.name}</h3>
+                 <p class="category-desc">${cat.description}</p>
+                 ${isEmpty ? '<span class="category-coming-soon">قريبا</span>' : ''}
+             </a>
+         `;
+     }).join('');
+     container.innerHTML = cardsHtml;
+ }
 
 function renderAllProducts() {
     const container = document.getElementById('all-products-grid');
@@ -605,21 +455,30 @@ function getFilteredAndSortedProducts() {
 }
 
 function renderShopProducts() {
-    const container = document.getElementById('shop-products');
-    if (!container) return;
-    
-    const filtered = getFilteredAndSortedProducts();
-    container.innerHTML = '';
-    
-    if (filtered.length === 0) {
-        container.innerHTML = '<p class="no-products">لا توجد منتجات مطابقة لبحثك</p>';
-        return;
-    }
-    
-    filtered.forEach(product => {
-        container.appendChild(createProductCard(product));
-    });
-}
+     const container = document.getElementById('shop-products');
+     if (!container) return;
+     
+     const filtered = getFilteredAndSortedProducts();
+     container.innerHTML = '';
+     
+     if (filtered.length === 0) {
+         if (state.currentCategory !== 'all' && !state.categoriesWithProducts.has(state.currentCategory)) {
+             container.innerHTML = `
+                 <div class="no-products coming-soon-message">
+                     <span>🕐</span>
+                     <p>قريبا ستعرض فيها ساعات</p>
+                 </div>
+             `;
+         } else {
+             container.innerHTML = '<p class="no-products">لا توجد منتجات مطابقة لبحثك</p>';
+         }
+         return;
+     }
+     
+     filtered.forEach(product => {
+         container.appendChild(createProductCard(product));
+     });
+ }
 
 function initShop() {
     renderCategoryFilters();

@@ -1,6 +1,8 @@
 import { supabase } from './config.js';
 
 const SESSION_KEY = 'admin_session';
+const SESSION_TIMESTAMP_KEY = 'admin_session_ts';
+const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
 export async function getCurrentUser() {
     try {
@@ -48,10 +50,13 @@ export async function login(email, password) {
             throw new Error('ليس لديك صلاحية الوصول إلى لوحة التحكم');
         }
 
-        localStorage.setItem(SESSION_KEY, JSON.stringify({
+        const sessionData = {
             user: data.user,
-            profile
-        }));
+            profile,
+            timestamp: Date.now()
+        };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+        localStorage.setItem(SESSION_TIMESTAMP_KEY, String(Date.now()));
 
         return { success: true, user: data.user, profile };
     } catch (error) {
@@ -64,6 +69,7 @@ export async function logout() {
     try {
         await supabase.auth.signOut();
         localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(SESSION_TIMESTAMP_KEY);
         return { success: true };
     } catch (error) {
         console.error('Logout error:', error);
@@ -71,14 +77,40 @@ export async function logout() {
     }
 }
 
+export async function validateSessionIntegrity() {
+    try {
+        const sessionRaw = localStorage.getItem(SESSION_KEY);
+        if (!sessionRaw) return false;
+
+        const session = JSON.parse(sessionRaw);
+        const timestamp = parseInt(localStorage.getItem(SESSION_TIMESTAMP_KEY) || '0', 10);
+
+        if (!session || !session.user || !session.profile) {
+            await clearSession();
+            return false;
+        }
+
+        if (timestamp && Date.now() - timestamp > SESSION_TIMEOUT) {
+            await clearSession();
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Session integrity error:', error);
+        await clearSession();
+        return false;
+    }
+}
+
 export async function checkAuth() {
     try {
-        const session = localStorage.getItem(SESSION_KEY);
-        if (!session) return false;
+        const hasIntegrity = await validateSessionIntegrity();
+        if (!hasIntegrity) return false;
 
         const { data: { user }, error } = await supabase.auth.getUser();
         if (error || !user) {
-            localStorage.removeItem(SESSION_KEY);
+            await clearSession();
             return false;
         }
 
@@ -89,13 +121,36 @@ export async function checkAuth() {
             .single();
 
         if (profileError || !profile || profile.role !== 'admin') {
-            localStorage.removeItem(SESSION_KEY);
+            await clearSession();
             return false;
         }
 
+        localStorage.setItem(SESSION_TIMESTAMP_KEY, String(Date.now()));
         return true;
     } catch (error) {
         console.error('Auth check error:', error);
+        await clearSession();
         return false;
     }
+}
+
+export async function clearSession() {
+    try {
+        await supabase.auth.signOut();
+    } catch (error) {
+        console.error('Error signing out:', error);
+    } finally {
+        localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(SESSION_TIMESTAMP_KEY);
+    }
+}
+
+export async function getAdminUser() {
+    const isAuth = await checkAuth();
+    if (!isAuth) return null;
+    return getCurrentUser();
+}
+
+export function isAdminRole(role) {
+    return role === 'admin' || role === 'super_admin';
 }

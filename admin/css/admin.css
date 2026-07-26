@@ -1176,6 +1176,25 @@ body {
     color: var(--text-primary);
 }
 
+.modal-hide {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    pointer-events: none;
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: white;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+.btn-warning:hover:not(:disabled) {
+    background: #d97706;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    transform: translateY(-1px);
+}
+
 .modal-body {
     padding: 24px;
 }

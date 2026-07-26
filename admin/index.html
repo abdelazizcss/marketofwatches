@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="no-referrer">
     <title>لوحة التحكم - بوخاري للساعات</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -120,7 +122,7 @@
                             <div class="stat-icon purple">💰</div>
                             <div class="stat-info">
                                 <h3>إجمالي الإيرادات</h3>
-                                <p class="stat-value" id="stat-revenue">0 ر.س</p>
+                                <p class="stat-value" id="stat-revenue">0 DA</p>
                             </div>
                         </div>
                     </div>
@@ -158,6 +160,12 @@
         import { checkAuth, logout, getCurrentUser } from './js/auth.js';
         import { getDashboardStats, fetchOrders, fetchProducts } from './js/api.js';
         import { showToast, formatDate, formatPrice } from './js/ui.js';
+        import { getCsrfToken, setupNavigationGuard, setupSecureAttribute, setupSensitiveFormProtection } from './js/protection.js';
+
+        const ADMIN_PATHS = ['/', '/index.html', '/products.html', '/categories.html', '/orders.html'];
+        setupNavigationGuard(ADMIN_PATHS.map(path => `/admin${path}`));
+
+        setupSecureAttribute(document.querySelector('a[href="../index.html"]'), 'href', ['https', 'http']);
 
         const sidebar = document.getElementById('sidebar');
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -176,16 +184,31 @@
         });
 
         logoutBtn?.addEventListener('click', async () => {
-            try {
-                await logout();
-                showToast('تم تسجيل الخروج بنجاح', 'success');
-                window.location.href = 'login.html';
-            } catch (error) {
-                showToast('حدث خطأ في تسجيل الخروج', 'error');
+            const confirmed = await showModal({
+                title: 'تسجيل الخروج',
+                message: 'هل أنت متأكد من تسجيل الخروج؟',
+                confirmText: 'خروج',
+                type: 'warning'
+            });
+
+            if (confirmed) {
+                try {
+                    await logout();
+                    showToast('تم تسجيل الخروج بنجاح', 'success');
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    showToast('حدث خطأ في تسجيل الخروج', 'error');
+                }
             }
         });
 
         async function init() {
+            const csrfToken = getCsrfToken();
+            if (!csrfToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+
             const isAuth = await checkAuth();
             if (!isAuth) {
                 window.location.href = 'login.html';
@@ -209,7 +232,7 @@
                 document.getElementById('stat-products').textContent = stats.totalProducts;
                 document.getElementById('stat-categories').textContent = stats.totalCategories;
                 document.getElementById('stat-orders').textContent = stats.totalOrders;
-                document.getElementById('stat-revenue').textContent = `${stats.totalRevenue.toFixed(2)} ر.س`;
+                document.getElementById('stat-revenue').textContent = `${stats.totalRevenue.toFixed(2)} DA`;
 
                 const ordersResult = await fetchOrders({ page: 1, limit: 5 });
                 const recentOrdersContainer = document.getElementById('recent-orders');

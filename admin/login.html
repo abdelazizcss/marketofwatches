@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="no-referrer">
     <title>تسجيل الدخول - لوحة التحكم</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -63,12 +65,23 @@
     <script type="module">
         import { login, checkAuth } from './js/auth.js';
         import { showToast } from './js/ui.js';
+        import { getCsrfToken, setupNavigationGuard, setupSensitiveFormProtection, rateLimiter } from './js/protection.js';
+
+        setupNavigationGuard(['/login.html']);
 
         const loginForm = document.getElementById('login-form');
         const loginBtn = document.getElementById('login-btn');
         const loginError = document.getElementById('login-error');
 
+        setupSensitiveFormProtection(loginForm);
+
         async function init() {
+            const csrfToken = getCsrfToken();
+            if (!csrfToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+
             const isAuth = await checkAuth();
             if (isAuth) {
                 window.location.href = 'index.html';
@@ -77,6 +90,8 @@
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            rateLimiter('login_attempt', 5, 60000);
 
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;

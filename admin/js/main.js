@@ -3,7 +3,7 @@ export function initAdmin() {
 }
 
 export function formatCurrency(amount) {
-    return `${Number(amount).toFixed(2)} ر.س`;
+    return `${Number(amount).toFixed(2)} DA`;
 }
 
 export function formatDate(dateString) {
