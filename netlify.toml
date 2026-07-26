@@ -16,8 +16,6 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
-    Cross-Origin-Embedder-Policy = "require-corp"
-    Cross-Origin-Opener-Policy = "same-origin"
 
 [[headers]]
   for = "/admin/*"
@@ -27,8 +25,6 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
-    Cross-Origin-Embedder-Policy = "require-corp"
-    Cross-Origin-Opener-Policy = "same-origin"
 
 [[headers]]
   for = "/*.css"
