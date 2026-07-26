@@ -655,11 +655,118 @@ function initBackToTop() {
 }
 
 /* =========================================
-      Initialization
-      ========================================= */
+       Image Zoom
+       ========================================= */
+function initImageZoom() {
+    const productImage = document.getElementById('product-image');
+    const zoomBtn = document.getElementById('zoom-btn');
+    if (!productImage || !zoomBtn) return;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'zoom-overlay';
+    overlay.innerHTML = `
+        <button class="zoom-close" aria-label="إغلاق">&times;</button>
+        <button class="zoom-nav prev" aria-label="صورة سابقة">&#10094;</button>
+        <div class="zoom-modal">
+            <img src="" alt="" class="zoom-image">
+        </div>
+        <button class="zoom-nav next" aria-label="صورة تالية">&#10095;</button>
+        <div class="zoom-counter"></div>
+    `;
+    document.body.appendChild(overlay);
+
+    const zoomImg = overlay.querySelector('.zoom-image');
+    const closeBtn = overlay.querySelector('.zoom-close');
+    const prevBtn = overlay.querySelector('.zoom-nav.prev');
+    const nextBtn = overlay.querySelector('.zoom-nav.next');
+    const counter = overlay.querySelector('.zoom-counter');
+
+    let currentIndex = 0;
+    let images = [];
+
+    function getImages() {
+        const imgs = [];
+        if (productImage.src) imgs.push(productImage.src);
+        const thumbs = document.querySelectorAll('.gallery-thumb');
+        thumbs.forEach(t => imgs.push(t.src));
+        return imgs;
+    }
+
+    function openZoom(index) {
+        images = getImages();
+        if (images.length === 0) return;
+        currentIndex = index;
+        updateZoomImage();
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeZoom() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function updateZoomImage() {
+        if (images.length === 0) return;
+        zoomImg.src = images[currentIndex];
+        zoomImg.alt = productImage.alt || 'صورة المنتج';
+        if (images.length > 1) {
+            counter.textContent = `${currentIndex + 1} / ${images.length}`;
+            counter.style.display = 'block';
+        } else {
+            counter.style.display = 'none';
+        }
+    }
+
+    zoomBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openZoom(0);
+    });
+
+    productImage.addEventListener('click', () => {
+        openZoom(0);
+    });
+
+    closeBtn.addEventListener('click', closeZoom);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeZoom();
+    });
+
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (images.length === 0) return;
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateZoomImage();
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (images.length === 0) return;
+        currentIndex = (currentIndex + 1) % images.length;
+        updateZoomImage();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (!overlay.classList.contains('active')) return;
+        if (e.key === 'Escape') closeZoom();
+        if (e.key === 'ArrowLeft') {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateZoomImage();
+        }
+        if (e.key === 'ArrowRight') {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateZoomImage();
+        }
+    });
+}
+
+/* =========================================
+       Initialization
+       ========================================= */
 document.addEventListener('DOMContentLoaded', async () => {
     initHeaderScroll();
     initBackToTop();
+    initImageZoom();
     await loadData();
     
     const path = window.location.pathname;
