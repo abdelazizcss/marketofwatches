@@ -185,15 +185,34 @@ async function loadData() {
 
         state.categoriesWithProducts = new Set(state.products.map(p => p.category));
 
-        state.reviews = EMBEDDED_DATA.reviews;
-        state.faq = EMBEDDED_DATA.faq;
+        state.reviews = EMBEDDED_DATA.reviews || [];
+        state.faq = EMBEDDED_DATA.faq || [];
     } catch (error) {
         console.error('Error loading data from Supabase:', error);
-        state.products = EMBEDDED_DATA.products;
-        state.categories = EMBEDDED_DATA.categories;
-        state.reviews = EMBEDDED_DATA.reviews;
-        state.faq = EMBEDDED_DATA.faq;
+        try {
+            const [productsData, categoriesData, reviewsData, faqData] = await Promise.all([
+                fetch('data/products.json').then(r => r.json()),
+                fetch('data/categories.json').then(r => r.json()),
+                fetch('data/reviews.json').then(r => r.json()),
+                fetch('data/faq.json').then(r => r.json())
+            ]);
+            state.products = productsData;
+            state.categories = categoriesData;
+            state.reviews = reviewsData;
+            state.faq = faqData;
+        } catch (localError) {
+            console.error('Error loading local fallback data:', localError);
+            state.products = EMBEDDED_DATA.products || [];
+            state.categories = EMBEDDED_DATA.categories || [];
+            state.reviews = EMBEDDED_DATA.reviews || [];
+            state.faq = EMBEDDED_DATA.faq || [];
+        }
     }
+
+    state.products = Array.isArray(state.products) ? state.products : [];
+    state.categories = Array.isArray(state.categories) ? state.categories : [];
+    state.reviews = Array.isArray(state.reviews) ? state.reviews : [];
+    state.faq = Array.isArray(state.faq) ? state.faq : [];
 }
 
 /* =========================================
@@ -277,7 +296,7 @@ function getWhatsAppLink(productName, price, productUrl) {
     const message = `مرحباً بك في بوخاري للساعات\n\n`;
     const productInfo = ` المنتج: ${productName}\n السعر: ${price}\n`;
     const linkInfo = ` رابط المنتج: ${window.location.origin}${productUrl}\n`;
-    const request = `\n الاسم الكامل\n العنوان\n رقم الهاتف`;
+    const request = `\n الاسم الكامل\n العنوان`;
     const closing = `\n\nشكراً لثقتك بنا `;
 
     const fullMessage = message + productInfo + linkInfo + request + closing;
