@@ -24,6 +24,19 @@ function isImageRequest(request) {
     return false;
 }
 
+function isHtmlRequest(request) {
+    const url = new URL(request.url);
+    return url.pathname === '/' || url.pathname.endsWith('.html');
+}
+
+function putInCache(request, networkResponse) {
+    if (networkResponse && networkResponse.status === 200) {
+        caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, networkResponse.clone());
+        });
+    }
+}
+
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -54,28 +67,40 @@ self.addEventListener('fetch', (event) => {
     if (isImageRequest(request)) {
         event.respondWith(
             caches.match(request).then((cachedResponse) => {
-                const fetchPromise = fetch(request)
-                    .then((networkResponse) => {
-                        if (networkResponse && networkResponse.status === 200) {
-                            const responseClone = networkResponse.clone();
-                            caches.open(CACHE_NAME).then((cache) => {
-                                cache.put(request, responseClone);
-                            });
-                        }
-                        return networkResponse;
-                    })
-                    .catch(() => {
-                        return cachedResponse || new Response('', { status: 404 });
-                    });
+                const fetchPromise = fetch(request).then((networkResponse) => {
+                    putInCache(request, networkResponse);
+                    return networkResponse;
+                }).catch(() => {
+                    return cachedResponse || new Response('', { status: 404 });
+                });
                 return cachedResponse || fetchPromise;
             })
         );
         return;
     }
 
+    if (isHtmlRequest(request)) {
+        event.respondWith(
+            fetch(request).then((networkResponse) => {
+                putInCache(request, networkResponse);
+                return networkResponse;
+            }).catch(() => {
+                return caches.match(request).then((cachedResponse) => {
+                    return cachedResponse || new Response('', { status: 404 });
+                });
+            })
+        );
+        return;
+    }
+
     event.respondWith(
-        caches.match(request).then((cachedResponse) => {
-            return cachedResponse || fetch(request);
+        fetch(request).then((networkResponse) => {
+            putInCache(request, networkResponse);
+            return networkResponse;
+        }).catch(() => {
+            return caches.match(request).then((cachedResponse) => {
+                return cachedResponse || new Response('', { status: 404 });
+            });
         })
     );
 });
