@@ -149,6 +149,8 @@ button {
     background: rgba(11, 18, 32, 0.6);
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
 }
 
 .section-alt {
@@ -710,6 +712,8 @@ button {
     position: relative;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
+    content-visibility: auto;
+    contain-intrinsic-size: 0 350px;
 }
 
 .product-card::after {

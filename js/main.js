@@ -222,7 +222,7 @@ function createProductCard(product) {
     const mainImage = images[0];
     const thumbnails = images.slice(1);
 
-    card.innerHTML = `
+card.innerHTML = `
         <div class="product-card-media">
             <div class="product-card-gallery">
                 ${thumbnails.map((img, idx) => `
@@ -247,11 +247,13 @@ function createProductCard(product) {
             <div class="product-card-footer">
                 <a href="${getWhatsAppLink(product.name, displayPrice, `/product.html?id=${product.id}`)}" 
                    class="btn btn-whatsapp" target="_blank" rel="noopener" style="width:100%">
-                   🛒 شراء عبر واتساب
+                    🛒 شراء عبر واتساب
                 </a>
             </div>
         </div>
     `;
+
+    images.forEach(src => cacheImage(src));
 
     const mainImgEl = card.querySelector('.product-card-image img');
     const thumbs = card.querySelectorAll('.product-card-thumb');
@@ -539,27 +541,30 @@ function renderProductPage() {
             this.onerror = null;
             this.src = 'images/watch.svg';
         };
+        cacheImage(images[0]);
     }
     
     const gallery = document.getElementById('product-gallery');
     if (gallery) {
         gallery.innerHTML = '';
         if (images.length > 0) {
-            images.forEach((img, index) => {
-                const thumb = document.createElement('img');
-                thumb.src = img;
-                thumb.alt = `${product.name} - صورة ${index + 1}`;
-                thumb.loading = 'lazy';
-                thumb.className = 'gallery-thumb' + (index === 0 ? ' active' : '');
-                thumb.onerror = function() {
-                    this.onerror = null;
-                    this.src = 'images/watch.svg';
-                };
-                thumb.addEventListener('click', () => {
-                    productImage.src = img;
-                    gallery.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
-                    thumb.classList.add('active');
-                });
+images.forEach((img, index) => {
+                 const thumb = document.createElement('img');
+                 thumb.src = img;
+                 thumb.alt = `${product.name} - صورة ${index + 1}`;
+                 thumb.loading = 'lazy';
+                 thumb.className = 'gallery-thumb' + (index === 0 ? ' active' : '');
+                 thumb.onerror = function() {
+                     this.onerror = null;
+                     this.src = 'images/watch.svg';
+                 };
+                 cacheImage(img);
+thumb.addEventListener('click', () => {
+                     productImage.src = img;
+                     cacheImage(img);
+                     gallery.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+                     thumb.classList.add('active');
+                 });
                 gallery.appendChild(thumb);
             });
         }
@@ -697,6 +702,7 @@ function initImageZoom() {
         if (images.length === 0) return;
         currentIndex = index;
         updateZoomImage();
+        images.forEach(src => cacheImage(src));
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -761,12 +767,100 @@ function initImageZoom() {
 }
 
 /* =========================================
-       Initialization
-       ========================================= */
+    Image Preloading & Lazy Loading
+    ========================================= */
+const IMAGE_CACHE_NAME = 'marketofwatches-images-v1';
+
+function cacheImage(src) {
+    if (!src) return;
+    if (!('caches' in window)) return;
+    caches.open(IMAGE_CACHE_NAME).then((cache) => {
+        cache.match(src).then((cached) => {
+            if (cached) return;
+            fetch(src, { mode: 'cors' }).then((response) => {
+                if (response && response.status === 200) {
+                    cache.put(src, response.clone());
+                }
+            }).catch(() => {});
+        });
+    });
+}
+
+function preloadImage(src) {
+    if (!src) return;
+    cacheImage(src);
+    const img = new Image();
+    img.src = src;
+}
+
+function preloadProductImages(product) {
+    if (!product || !product.images) return;
+    product.images.forEach(src => preloadImage(src));
+}
+
+function initImagePreloader() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    cacheImage(img.src);
+                }
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: '200px 0px',
+        threshold: 0.01
+    });
+
+    document.querySelectorAll('img[data-src]').forEach(img => {
+        observer.observe(img);
+    });
+}
+
+function observeProductImages() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const card = entry.target;
+                const mainImg = card.querySelector('.product-card-image img');
+                const thumbs = card.querySelectorAll('.product-card-thumb');
+                if (mainImg && mainImg.dataset.src) {
+                    preloadImage(mainImg.dataset.src);
+                }
+                thumbs.forEach(thumb => {
+                    if (thumb.dataset.src) {
+                        preloadImage(thumb.dataset.src);
+                    }
+                });
+                observer.unobserve(card);
+            }
+        });
+    }, {
+        rootMargin: '300px 0px',
+        threshold: 0.01
+    });
+
+    document.querySelectorAll('.product-card').forEach(card => {
+        observer.observe(card);
+    });
+}
+
+function initLazyLoading() {
+    if ('IntersectionObserver' in window) {
+        initImagePreloader();
+        observeProductImages();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     initHeaderScroll();
     initBackToTop();
     initImageZoom();
+    initLazyLoading();
     await loadData();
     
     const path = window.location.pathname;

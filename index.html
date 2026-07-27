@@ -17,6 +17,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="images/logo/logo-transparent.png" fetchpriority="high">
+    <link rel="preload" as="image" href="images/watch.svg">
 </head>
 <body>
     <div class="watch-face-bg"></div>
@@ -26,7 +28,7 @@
     <header class="header">
         <div class="header-container">
             <a href="index.html" class="logo-link" aria-label="بوخاري للساعات - الصفحة الرئيسية">
-                <img src="images/logo/logo-transparent.png" alt="بوخاري للساعات" class="logo" width="180" height="72" loading="lazy">
+                <img src="images/logo/logo-transparent.png" alt="بوخاري للساعات" class="logo" width="180" height="72" loading="lazy" decoding="async" fetchpriority="high">
             </a>
         </div>
     </header>
@@ -136,5 +138,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' }).then((reg) => {
+                    console.log('Service Worker registered:', reg.scope);
+                }).catch((err) => {
+                    console.log('Service Worker registration failed:', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
