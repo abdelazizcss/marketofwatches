@@ -881,6 +881,7 @@ button {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-line-orient: vertical;
+    line-clamp: 2;
     overflow: hidden;
     line-height: 1.6;
 }
@@ -2735,9 +2736,9 @@ button {
 }
 
 /* =========================================
-   Small Mobile Styles
+   Mobile Styles
    ========================================= */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .products-grid {
         grid-template-columns: 1fr;
         gap: 12px;
