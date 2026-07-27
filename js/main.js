@@ -882,11 +882,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     initLazyLoading();
     await loadData();
     
-    const path = window.location.pathname;
-    
-    if (path.includes('shop.html')) {
+    const currentPath = window.location.pathname || window.location.href || '';
+
+    if (currentPath.toLowerCase().includes('shop.html') || document.getElementById('shop-products')) {
         initShop();
-    } else if (path.includes('product.html')) {
+    } else if (currentPath.toLowerCase().includes('product.html') || document.getElementById('product-image')) {
         renderProductPage();
     } else {
         renderCategories();
