@@ -1218,6 +1218,60 @@ body {
 /* =========================================
    Product Form
    ========================================= */
+.product-form-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.form-container-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-container-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+.close-form-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.close-form-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    margin-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
 .product-form .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1615,8 +1669,18 @@ body {
 }
 
 /* =========================================
-   Responsive Design
-   ========================================= */
+    Responsive Design
+    ========================================= */
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .dashboard-sections {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar {
         right: 100%;
@@ -1660,6 +1724,21 @@ body {
 
     .stats-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
     }
 
     .filters-bar {
@@ -1682,6 +1761,11 @@ body {
 
     .dashboard-sections {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .dashboard-section {
+        padding: 20px;
     }
 
     .form-row {
@@ -1703,6 +1787,28 @@ body {
         grid-template-columns: 1fr;
     }
 
+    .product-form-container {
+        padding: 20px;
+    }
+
+    .form-container-header {
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+
+    .form-container-title {
+        font-size: 16px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
     .modal {
         max-width: 95vw;
         margin: 10px;
@@ -1722,6 +1828,25 @@ body {
     .user-details {
         display: none;
     }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .data-table {
+        min-width: 600px;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+
+    .btn-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1734,17 +1859,17 @@ body {
     }
 
     .stat-card {
-        padding: 16px;
+        padding: 14px;
     }
 
     .stat-value {
-        font-size: 22px;
+        font-size: 20px;
     }
 
     .stat-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
     }
 
     .content {
@@ -1763,6 +1888,80 @@ body {
     .toast {
         min-width: auto;
         max-width: none;
+    }
+
+    .top-bar {
+        padding: 0 16px;
+    }
+
+    .section-title {
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    .status-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    .product-thumb {
+        width: 32px;
+        height: 32px;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+    }
+
+    .page-btn {
+        min-width: 32px;
+        height: 32px;
+        font-size: 12px;
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .stat-card {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .stat-value {
+        font-size: 18px;
+    }
+
+    .stat-info h3 {
+        font-size: 11px;
+    }
+
+    .content {
+        padding: 12px;
+    }
+
+    .page-title {
+        font-size: 18px;
+    }
+
+    .dashboard-section {
+        padding: 16px;
     }
 }
 
